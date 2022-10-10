@@ -1,0 +1,36 @@
+bool partsum(vll arr,ll n,ll id)
+{
+    ll sum = 0,i;
+    for(i=0; i<n; i++)
+    {
+        if(i==id-1)
+            continue;
+        sum += arr[i];
+    }
+    if(sum&1)
+        return false;
+    // Sum of each part.
+    ll psum = sum/2;
+    // latest compilers allows variable length arrays.
+    // Else declare the array on heap
+    bool pArr[psum+1][n+1];
+    // initialize top row as true
+    for (i = 0; i <= n; i++)
+        pArr[0][i] = true;
+    // initialize first column as false (except part[0][0])
+    for (i = 1; i <= psum; i++)
+        pArr[i][0] = false;
+    // Fill the partition table in botton up manner
+    for (i = 1; i <= psum; i++)
+    {
+        for (int j = 1; j <= n; j++)
+        {
+            pArr[i][j] = pArr[i][j-1];
+            if(j==id)
+                continue;
+            if (i >= arr[j-1])
+                pArr[i][j] = pArr[i][j] || pArr[i - arr[j-1]][j-1];
+        }
+    }
+    return pArr[psum][n];
+}
